@@ -1,16 +1,15 @@
 var mongoose = require ('mongoose');
 var Schema = mongoose.Schema;
-
-//likes and dislike schema
+var likesPlugin = require('mongoose-likes');
+// likes and dislike schema
 // var actionSchema = new Schema({
-//     likes: 'likes',
 //
-//     dislikes: 'dislikes',
+//     likes: [{type: mongoose.Schema.Types.ObjectId,
+//              ref: 'User'}],
 //
-//     postedBy: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'User'
-//     }
+//     dislikes: [{type: mongoose.Schema.Types.ObjectId,
+//                 ref: 'User'}]
+//
 // }, {
 //     timestamps: true
 // });
@@ -22,7 +21,7 @@ var commentSchema = new Schema({
         required: true
     },
 
-   // action:[actionSchema],
+   action:[actionSchema],
 
    postedBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,18 +33,13 @@ var commentSchema = new Schema({
 
 // post schema
 var postSchema = new Schema({
-    post: {
-        type: String,
-        required: true,
-        unique: true
+    idea :{
+        type : String,
+        required : true
     },
-    idea: String,
+    likes : [{ type: Schema.ObjectId, ref: 'User'}],
 
-    rational: String,
-
-    effect:String,
-
-    // action:[actionSchema],
+    dislikes : [{ type: Schema.ObjectId, ref: 'User'}],
 
     comments: [commentSchema],
 
@@ -56,6 +50,8 @@ var postSchema = new Schema({
 }, {
     timestamps: true
 });
+
+postSchema.plugin(likesPlugin);
 
 var Posts = mongoose.model('Post', postSchema);
 

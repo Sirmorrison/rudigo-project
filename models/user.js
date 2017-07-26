@@ -7,6 +7,8 @@ var User = new Schema({
     OauthId: String,
     OauthToken: String,
     image_url: String,
+    // likes : [{ type: Schema.ObjectId, ref: ['Item' , 'comments']}],
+    // dislike : [{ type: Schema.ObjectId, ref: ['Item' , 'comments']}],
     admin: {
             type: Boolean,
             default: false

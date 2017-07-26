@@ -13,6 +13,7 @@ router.route('/')
 .get(Verify.verifyOrdinaryUser, function (req,res) {
 
     Posts.find({})
+        .populate('postedBy')
         .populate('comments.postedBy')
         .exec(function(err, post) {
         if (err) throw err;
@@ -23,17 +24,17 @@ router.route('/')
 // creating new post to database
 .post(Verify.verifyOrdinaryUser, function (req, res) {
 
+    req.body.postedBy = req.decoded._doc._id;
+
     Posts.create(req.body, function (err, post) {
         if (err) throw err;
-
-        req.body.postedBy = req.decoded._doc._id;
 
         console.log('post added successful');
         var id = post._id;
         res.writeHead(200,{
             'content-Type': 'text/plain'
         });
-        res.end(' post : '+ id);
+        res.end(' post ID : '+ id );
 
     });
 })
@@ -52,7 +53,7 @@ router.route('/:PostsId')
 .get(Verify.verifyOrdinaryUser, function (req,res) {
 
     Posts.findById(req.params.PostsId)
-        .populate('comments.postedBy')
+        .populate('postSchema.postedBy')
         .exec( function(err, post) {
         if (err) throw err;
 
@@ -143,10 +144,11 @@ router.route('/:PostsId')
 
 router.route('/:PostsId/comments')
 .all(Verify.verifyOrdinaryUser)
+
 .get(function (req,res) {
 
     Posts.findById(req.params.PostsId)
-        .populate('comments.postedBy')
+        .populate('postedBy','comments.postedBy')
         .exec( function(err, post) {
         if (err) throw err;
 
@@ -248,6 +250,11 @@ router.route('/:PostsId/comments/:commentsId')
         });
     });
 });
-
+// router.route('/:PostsId/like')
+// .post(function (req, res) {
+//
+//         post.like(post.id, likerId, function(err))
+//
+// router.route('/:PostsId/comments/:commentsId')
 
 module.exports = router;

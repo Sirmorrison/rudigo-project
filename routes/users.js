@@ -5,11 +5,12 @@ var Verify = require('./verify');
 var passport = require("passport");
 var authenticate = require('../authenticate');
 
-/* GET users listing. */
+//facebook redirection and authentication api
 router.get('/facebook', passport.authenticate('facebook'),
     function(req, res) {});
 
 router.get('/facebook/callback', function (req, res, next) {
+    // res.json(req);
     passport.authenticate('facebook', function (err, user, info) {
         if (err) {
             return next(err);
